@@ -14,8 +14,9 @@ const router = createRouter({
     { path: "/", redirect: "/coaches" },
     { path: "/coaches", component: CoachesList },
     {
-      path: "/coaches:id",
+      path: "/coaches/:id",
       component: CoachDetail,
+      props: true,    // this defines that :id is going to be as a prop into the component
       children: [
         { path: "contact", component: ContactCoach }, // /coaches/c1/contact
       ],
