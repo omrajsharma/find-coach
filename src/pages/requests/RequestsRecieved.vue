@@ -1,4 +1,12 @@
 <template>
+<div>
+
+  <!-- Dialog -->
+  <base-dialog :show="!!error" title="An error occured!!" @click="handleError">
+    <p> {{error}} </p>
+  </base-dialog>
+
+
   <section>
     <base-card>
       <header>
@@ -6,7 +14,8 @@
       </header>
 
       <!-- All the requests -->
-      <ul v-if="hasRequests">
+      <base-spinner v-if="isLoading"></base-spinner>
+      <ul v-else-if="hasRequests && !isLoading">
         <request-item
           v-for="req in recievedRequestes"
           :key="req.id"
@@ -16,9 +25,9 @@
       </ul>
 
       <h3 v-else>You haven't recieved any requests</h3>
-      <button @click="show">show</button>
     </base-card>
   </section>
+</div>
 </template>
 
 <script>
@@ -28,6 +37,12 @@ export default {
   components: {
     RequestItem,
   },
+  data() {
+    return {
+      isLoading : false,
+      error: null
+    };
+  },
   computed: {
     recievedRequestes() {
       return this.$store.getters["requests/requests"];
@@ -35,11 +50,23 @@ export default {
     hasRequests() {
       return this.$store.getters["requests/hasRequests"];
     },
+  }, 
+  created() {
+    this.loadRequests();
   },
   methods: {
-      show() {
-          console.log(this.$store.getters["requests/requests"]);
+    async loadRequests() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('requests/fetchRequests');
+      } catch (error){
+        this.error = error.message || 'something went wrong';
       }
+      this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
+    }
   }
 };
 </script>

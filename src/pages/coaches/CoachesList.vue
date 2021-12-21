@@ -1,4 +1,11 @@
 <template>
+<div>
+
+  <base-dialog :show="!!error" title="An error Occured" @close="handleError">
+    <p>{{ error }}</p>
+  </base-dialog>
+
+
   <section>
     <coach-filter @change-filter="setFilters"></coach-filter>
   </section>
@@ -6,10 +13,17 @@
   <section>
     <base-card>
         <div class="controls">
-        <base-button mode="outline">Refresh</base-button>
-        <base-button v-if="!isCoach" link to="/register">Register as a coach</base-button>
+        <base-button mode="outline" @click="loadCoaches(true)">Refresh</base-button>
+        <base-button v-if="!isCoach && !isLoading" link to="/register">Register as a coach</base-button>
         </div>
-        <ul v-if="filteredCoaches">
+
+        <!-- LOADING SPINNER -->
+        <div v-if="isLoading">
+          <base-spinner></base-spinner>
+        </div>
+        
+        <!-- COACHES -->
+        <ul v-if="hasCoaches">
         <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
                     {{ coach.firstName }}
                 </li> -->
@@ -18,7 +32,7 @@
             :key="coach.id"
             :id="coach.id"
             :first-name="coach.firstName"
-            :last-name="coach.firstName"
+            :last-name="coach.lastName"
             :rate="coach.hourlyRate"
             :areas="coach.areas"
         ></coach-item>
@@ -26,6 +40,7 @@
         <h1 v-else>No Coaches Found</h1>
     </base-card>
   </section>
+</div>
 </template>
 
 <script>
@@ -58,16 +73,36 @@ export default {
         return false;
       })
     },
+    hasCoaches() {
+      return !this.isLoading && this.$store.getters['coaches/hasCoaches'];
+    }
 
 
   },
   methods: {
     setFilters(updatedFilters){
       this.activeFilters = updatedFilters;
+    },
+    async loadCoaches(refresh = false) {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('coaches/loadCoaches', {forceRefresh: refresh});
+      } catch (error){
+        this.error = error.message || "Something went wrong!";
+      }
+      this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
     }
+  },
+  created() {
+    this.loadCoaches();
   },
   data() {
     return {
+        isLoading: false,
+        error: null,
         activeFilters: {
           frontend: true,
           backend: true,

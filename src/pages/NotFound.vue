@@ -1,3 +1,8 @@
 <template>
-    <h1 align="center">Not Found!!</h1>
+    <section>
+        <base-card>
+            <h2>Page Not Found</h2>
+            <p>This page could not be found - maybe checkout all our <router-link to="/coaches">coaches</router-link> </p>
+        </base-card>
+    </section>
 </template>
