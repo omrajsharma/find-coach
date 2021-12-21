@@ -7,7 +7,7 @@
     <base-card>
         <div class="controls">
         <base-button mode="outline">Refresh</base-button>
-        <base-button v-if="isCoach" link to="/register">Register as a coach</base-button>
+        <base-button v-if="!isCoach" link to="/register">Register as a coach</base-button>
         </div>
         <ul v-if="filteredCoaches">
         <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
@@ -21,7 +21,6 @@
             :last-name="coach.firstName"
             :rate="coach.hourlyRate"
             :areas="coach.areas"
-
         ></coach-item>
         </ul>
         <h1 v-else>No Coaches Found</h1>
