@@ -5,10 +5,29 @@
         </nav>
         <ul>
             <li> <router-link to="/coaches"> All Coaches </router-link> </li>
-            <li> <router-link to="/request"> Requests </router-link> </li>
+            <li v-if="isLoggedIn"> <router-link to="/request"> Requests </router-link> </li>
+            <li v-else> <router-link to="/auth">Login</router-link> </li>
+            <li v-if="isLoggedIn"> <base-button @click="logout"> Log Out</base-button> </li>
         </ul>
     </header>
 </template>
+
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+
+      this.$router.replace('/coaches');
+    }
+  }
+}
+</script>
 
 <style scoped>
     header {
