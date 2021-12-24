@@ -21,11 +21,11 @@ export default {
     }
   },
   watch: {
-    didAutoLogout(curValue, oldValue){
-      if(curValue && oldValue){
-        this.$router.replace('/coaches');
-      }
-    }
+    // didAutoLogout(curValue, oldValue){
+    //   if(curValue && oldValue){
+    //     this.$router.replace('/coaches');
+    //   }
+    // }
   }
 }
 </script>
